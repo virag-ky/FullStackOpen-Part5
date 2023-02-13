@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm';
 import loginService from './services/login';
 import Notification from './components/Notification';
 import BlogForm from './components/BlogForm';
+import Blog from './components/Blog';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -16,6 +17,7 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState('');
+  const [loginVisible, setLoginVisible] = useState(false);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -35,6 +37,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    setLoginVisible(false);
 
     try {
       const user = await loginService.login({
@@ -94,10 +97,6 @@ const App = () => {
     }
   };
 
-  const onChangeUsername = ({ target }) => setUsername(target.value);
-
-  const onChangePassword = ({ target }) => setPassword(target.value);
-
   const handleBlogChange = ({ target }) => {
     if (target.name === 'title') {
       setTitle(target.value);
@@ -114,20 +113,36 @@ const App = () => {
     }, 5000);
   };
 
-  return (
-    <div>
-      {!user && (
-        <div>
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' };
+    const showWhenVisible = { display: loginVisible ? '' : 'none' };
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+          {blogs.map((blog) => (
+            <Blog key={blog.id} title={blog.title} author={blog.author} />
+          ))}
+        </div>
+        <div style={showWhenVisible}>
           <Notification message={message} />
           <LoginForm
             username={username}
             password={password}
             handleLogin={handleLogin}
-            onChangeUsername={onChangeUsername}
-            onChangePassword={onChangePassword}
+            onChangeUsername={({ target }) => setUsername(target.value)}
+            onChangePassword={({ target }) => setPassword(target.value)}
           />
+          <button onClick={() => setLoginVisible(false)}>Cancel</button>
         </div>
-      )}
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      {!user && loginForm()}
       {user && (
         <div>
           <Notification message={message} />
