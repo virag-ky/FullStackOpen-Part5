@@ -6,6 +6,7 @@ import loginService from './services/login';
 import Notification from './components/Notification';
 import BlogForm from './components/BlogForm';
 import Blog from './components/Blog';
+import Togglable from './components/Togglable';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -17,7 +18,6 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState('');
-  const [loginVisible, setLoginVisible] = useState(false);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -37,7 +37,6 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    setLoginVisible(false);
 
     try {
       const user = await loginService.login({
@@ -113,19 +112,10 @@ const App = () => {
     }, 5000);
   };
 
-  const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' };
-    const showWhenVisible = { display: loginVisible ? '' : 'none' };
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-          {blogs.map((blog) => (
-            <Blog key={blog.id} title={blog.title} author={blog.author} />
-          ))}
-        </div>
-        <div style={showWhenVisible}>
+  return (
+    <div>
+      {!user && (
+        <Togglable buttonLabel="Login">
           <Notification message={message} />
           <LoginForm
             username={username}
@@ -134,15 +124,8 @@ const App = () => {
             onChangeUsername={({ target }) => setUsername(target.value)}
             onChangePassword={({ target }) => setPassword(target.value)}
           />
-          <button onClick={() => setLoginVisible(false)}>Cancel</button>
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <div>
-      {!user && loginForm()}
+        </Togglable>
+      )}
       {user && (
         <div>
           <Notification message={message} />
