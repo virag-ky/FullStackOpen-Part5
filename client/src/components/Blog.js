@@ -1,20 +1,38 @@
 import { useState } from 'react';
 
-const Blog = ({ title, author, url, likes, user }) => {
+const Blog = ({ blog, updateBlog }) => {
   const [show, setShow] = useState(false);
+  const [userLikes, setUserLikes] = useState(blog.likes);
   const buttonText = show ? 'Hide' : 'View';
+
+  const updatedBlogWithLikes = {
+    title: blog.title,
+    author: blog.author,
+    url: blog.url,
+    user: blog.user.id,
+    id: blog.id,
+    likes: userLikes + 1,
+  };
+
+  const addLike = () => {
+    setUserLikes(userLikes + 1);
+    updateBlog(updatedBlogWithLikes);
+  };
 
   return (
     <div id="blog-container">
       <div>
         <span>
-          {title} by {author}
+          {blog.title} by {blog.author}
         </span>
         {show && (
           <div id="extra-info">
-            <span>{url}</span>
-            <span>Likes: {likes}</span>
-            <span>{user}</span>
+            <span>{blog.url}</span>
+            <div>
+              <span>Likes: {userLikes}</span>
+              <button onClick={addLike}>Like</button>
+            </div>
+            <span>{blog.user.username}</span>
           </div>
         )}
       </div>

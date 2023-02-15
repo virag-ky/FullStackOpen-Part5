@@ -76,6 +76,7 @@ const App = () => {
 
     try {
       await blogService.create(blogObject);
+
       const res = await blogService.getAll();
 
       const filteredBlogs = res.filter(
@@ -90,6 +91,25 @@ const App = () => {
     }
   };
 
+  const addLikes = async (blogObject) => {
+    const userObj = window.localStorage.getItem('loggedBlogAppUser');
+    const parsedUserObj = JSON.parse(userObj);
+
+    window.localStorage.removeItem('userBlogs');
+
+    await blogService.update(blogObject.id, blogObject);
+    const res = await blogService.getAll();
+    if (user) {
+      const filteredBlogs = res.filter(
+        (blog) => blog.user.username === parsedUserObj.username
+      );
+
+      window.localStorage.setItem('userBlogs', JSON.stringify(filteredBlogs));
+
+      setUserBlogs(filteredBlogs);
+    }
+  };
+
   const removeMessage = () => {
     setTimeout(() => {
       setMessage('');
@@ -99,7 +119,7 @@ const App = () => {
   return (
     <div>
       {!user && (
-        <Togglable blogs={blogs} buttonLabel="Login">
+        <Togglable updateBlog={addLikes} blogs={blogs} buttonLabel="Login">
           <Notification message={message} />
           <LoginForm
             username={username}
@@ -116,7 +136,12 @@ const App = () => {
           <h2>Blogs</h2>
           <p>{user.username} logged in</p>
           <button onClick={handleLogout}>Logout</button>
-          <Togglable blogs={userBlogs} buttonLabel="New Blog" ref={blogFormRef}>
+          <Togglable
+            updateBlog={addLikes}
+            blogs={userBlogs}
+            buttonLabel="New Blog"
+            ref={blogFormRef}
+          >
             <BlogForm createBlog={addBlog} />
           </Togglable>
         </div>
