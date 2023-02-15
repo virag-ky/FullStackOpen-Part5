@@ -6,17 +6,18 @@ const Blog = ({ title, author, url, likes, user }) => {
 
   return (
     <div id="blog-container">
-      <span>
-        {title} by {author}
-      </span>
-      {show && (
-        <>
-          <span>{url}</span>
-          <span>Likes: {likes}</span>
-          <span>{user}</span>
-        </>
-      )}
-
+      <div>
+        <span>
+          {title} by {author}
+        </span>
+        {show && (
+          <div id="extra-info">
+            <span>{url}</span>
+            <span>Likes: {likes}</span>
+            <span>{user}</span>
+          </div>
+        )}
+      </div>
       <button onClick={() => setShow(!show)}>{buttonText}</button>
     </div>
   );
