@@ -19,10 +19,6 @@ const Blog = ({ blog, updateBlog, deleteBlog, username }) => {
     updateBlog(updatedBlogWithLikes);
   };
 
-  const removeBlog = () => {
-    deleteBlog(blog.id, blog);
-  };
-
   return (
     <div id="blog-container">
       <div>
@@ -38,7 +34,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, username }) => {
             </div>
             <span>{blog.user.username}</span>
             {blog.user.username === username ? (
-              <button onClick={removeBlog}>Remove</button>
+              <button onClick={() => deleteBlog(blog.id, blog)}>Remove</button>
             ) : (
               ''
             )}
