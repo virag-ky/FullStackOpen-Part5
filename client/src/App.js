@@ -115,7 +115,9 @@ const App = () => {
   const addLikes = async (blogObject) => {
     const parsedUserObj = setLocalStorage();
     await blogService.update(blogObject.id, blogObject);
-    updateLocalStorage(parsedUserObj);
+    if (user) {
+      updateLocalStorage(parsedUserObj);
+    }
   };
 
   // Delete a blog
