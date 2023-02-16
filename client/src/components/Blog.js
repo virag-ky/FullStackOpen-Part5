@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import blogService from '../services/blogs';
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, username }) => {
   const [show, setShow] = useState(false);
   const [userLikes, setUserLikes] = useState(blog.likes);
   const buttonText = show ? 'Hide' : 'View';
@@ -19,6 +20,8 @@ const Blog = ({ blog, updateBlog }) => {
     updateBlog(updatedBlogWithLikes);
   };
 
+  const removeBlog = () => {};
+
   return (
     <div id="blog-container">
       <div>
@@ -33,6 +36,11 @@ const Blog = ({ blog, updateBlog }) => {
               <button onClick={addLike}>Like</button>
             </div>
             <span>{blog.user.username}</span>
+            {blog.user.username === username ? (
+              <button onClick={removeBlog}>Remove</button>
+            ) : (
+              ''
+            )}
           </div>
         )}
       </div>

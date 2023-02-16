@@ -119,7 +119,12 @@ const App = () => {
   return (
     <div>
       {!user && (
-        <Togglable updateBlog={addLikes} blogs={blogs} buttonLabel="Login">
+        <Togglable
+          user={user}
+          updateBlog={addLikes}
+          blogs={blogs}
+          buttonLabel="Login"
+        >
           <Notification message={message} />
           <LoginForm
             username={username}
@@ -137,6 +142,7 @@ const App = () => {
           <p>{user.username} logged in</p>
           <button onClick={handleLogout}>Logout</button>
           <Togglable
+            user={user.username}
             updateBlog={addLikes}
             blogs={userBlogs}
             buttonLabel="New Blog"

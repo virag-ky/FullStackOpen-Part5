@@ -22,7 +22,12 @@ const Togglable = forwardRef((props, refs) => {
           props.blogs
             .sort((a, b) => b.likes - a.likes)
             .map((b) => (
-              <Blog key={b.id} blog={b} updateBlog={props.updateBlog} />
+              <Blog
+                key={b.id}
+                blog={b}
+                username={props.user}
+                updateBlog={props.updateBlog}
+              />
             ))}
       </div>
       <div style={showWhenVisible}>
