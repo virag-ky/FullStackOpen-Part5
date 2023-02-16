@@ -110,6 +110,28 @@ const App = () => {
     }
   };
 
+  const deleteBlog = async (id, blogObject) => {
+    if (
+      window.confirm(
+        `Remove blog "${blogObject.title}" by ${blogObject.author}?`
+      )
+    ) {
+      const userObj = window.localStorage.getItem('loggedBlogAppUser');
+      const parsedUserObj = JSON.parse(userObj);
+
+      window.localStorage.removeItem('userBlogs');
+      await blogService.deleteBlog(id);
+      const res = await blogService.getAll();
+      const filteredBlogs = res.filter(
+        (blog) => blog.user.username === parsedUserObj.username
+      );
+
+      window.localStorage.setItem('userBlogs', JSON.stringify(filteredBlogs));
+
+      setUserBlogs(filteredBlogs);
+    }
+  };
+
   const removeMessage = () => {
     setTimeout(() => {
       setMessage('');
@@ -119,12 +141,7 @@ const App = () => {
   return (
     <div>
       {!user && (
-        <Togglable
-          user={user}
-          updateBlog={addLikes}
-          blogs={blogs}
-          buttonLabel="Login"
-        >
+        <Togglable updateBlog={addLikes} blogs={blogs} buttonLabel="Login">
           <Notification message={message} />
           <LoginForm
             username={username}
@@ -144,6 +161,7 @@ const App = () => {
           <Togglable
             user={user.username}
             updateBlog={addLikes}
+            deleteBlog={deleteBlog}
             blogs={userBlogs}
             buttonLabel="New Blog"
             ref={blogFormRef}

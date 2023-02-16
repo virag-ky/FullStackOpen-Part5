@@ -27,6 +27,7 @@ const Togglable = forwardRef((props, refs) => {
                 blog={b}
                 username={props.user}
                 updateBlog={props.updateBlog}
+                deleteBlog={props.deleteBlog}
               />
             ))}
       </div>

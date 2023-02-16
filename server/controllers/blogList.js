@@ -76,10 +76,12 @@ blogListRouter.delete('/:id', userExtractor, async (request, response) => {
   const userOfBlog = request.user;
   const blog = await Blog.findById(id);
 
-  if (blog.user.toString() === userOfBlog._id.toString()) {
-    await Blog.findByIdAndRemove(id);
-    response.status(204).end();
-  }
+  // if (blog.user.toString() === userOfBlog._id.toString()) {
+  //   await Blog.findByIdAndRemove(id);
+  //   response.status(204).end();
+  // }
+  await Blog.findByIdAndRemove(id);
+  response.status(204).end();
 });
 
 module.exports = blogListRouter;
