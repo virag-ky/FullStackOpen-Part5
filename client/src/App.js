@@ -114,23 +114,32 @@ const App = () => {
   // Add likes
   const addLikes = async (blogObject) => {
     const parsedUserObj = setLocalStorage();
-    await blogService.update(blogObject.id, blogObject);
-    if (user) {
-      updateLocalStorage(parsedUserObj);
+
+    try {
+      await blogService.update(blogObject.id, blogObject);
+      if (user) {
+        updateLocalStorage(parsedUserObj);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
   // Delete a blog
   const deleteBlog = async (id, blogObject) => {
-    if (
-      window.confirm(
-        `Remove blog "${blogObject.title}" by ${blogObject.author}?`
-      )
-    ) {
-      const parsedUserObj = setLocalStorage();
-      await blogService.deleteBlog(id);
-      const filteredBlogs = updateLocalStorage(parsedUserObj);
-      setUserBlogs(filteredBlogs);
+    try {
+      if (
+        window.confirm(
+          `Remove blog "${blogObject.title}" by ${blogObject.author}?`
+        )
+      ) {
+        const parsedUserObj = setLocalStorage();
+        await blogService.deleteBlog(id);
+        const filteredBlogs = updateLocalStorage(parsedUserObj);
+        setUserBlogs(filteredBlogs);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 

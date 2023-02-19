@@ -20,7 +20,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, username }) => {
   };
 
   return (
-    <div id="blog-container">
+    <div className="blog" id="blog-container">
       <div>
         <span>
           {blog.title} by {blog.author}
