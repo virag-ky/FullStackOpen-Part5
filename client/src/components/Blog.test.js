@@ -17,6 +17,8 @@ test('renders content', () => {
   const element = screen.getByText('maisy by m');
   expect(element).toBeDefined();
 
+  //screen.debug(element)
+
   // const { container } = render(<Blog blog={blog} />);
   // const div = container.querySelector('.blog');
   // expect(div).toHaveTextContent('maisy by m');
