@@ -32,4 +32,16 @@ describe('<Togglable />', () => {
     const div = container.querySelector('.togglableContent');
     expect(div).not.toHaveStyle('display: none');
   });
+
+  test('toggled content can be closed', async () => {
+    const user = userEvent.setup();
+    const button = screen.getByText('Login');
+    await user.click(button);
+
+    const closeButton = screen.getByText('Cancel');
+    await user.click(closeButton);
+
+    const div = container.querySelector('.togglableContent');
+    expect(div).toHaveStyle('display: none');
+  });
 });
