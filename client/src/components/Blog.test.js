@@ -40,7 +40,6 @@ test('clicking the like button twice calls the handler twice', async () => {
   const updateBlog = jest.fn();
   const { container } = render(<Blog blog={blog} updateBlog={updateBlog} />);
 
-  // The test finds the button based on the text from the rendered component and clicks the element:
   const button = screen.getByText('View');
   await user.click(button);
 
