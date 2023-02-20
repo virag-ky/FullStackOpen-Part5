@@ -16,7 +16,7 @@ test('<BlogForm /> updates parent state and calls onSubmit', async () => {
   const createButton = screen.getByText('Create');
 
   await user.type(inputTitle, 'testing a form...');
-  await user.type(inputAuthor, "author's name");
+  await user.type(inputAuthor, 'authors name');
   await user.type(inputUrl, 'url of blog');
   await user.click(createButton);
 
