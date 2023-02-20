@@ -104,8 +104,13 @@ const App = () => {
 
     try {
       await blogService.create(blogObject);
-      const filteredBlogs = updateLocalStorage(parsedUserObj);
-      setUserBlogs(filteredBlogs);
+      const res = await blogService.getAll();
+      if (res.length === 1) {
+        setUserBlogs(res);
+      } else {
+        const filteredBlogs = updateLocalStorage(parsedUserObj);
+        setUserBlogs(filteredBlogs);
+      }
     } catch (err) {
       console.log(err);
     }

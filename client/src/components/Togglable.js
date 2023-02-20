@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, forwardRef, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
 import Blog from './Blog';
@@ -19,9 +20,8 @@ const Togglable = forwardRef((props, refs) => {
     <div>
       <div style={hideWhenVisible}>
         <button onClick={toggleVisibility}>{props.buttonLabel}</button>
-        {props.blogs &&
+        {props.blogs.length &&
           props.blogs
-            .sort((a, b) => b.likes - a.likes)
             .map((b) => (
               <Blog
                 key={b.id}
@@ -30,7 +30,14 @@ const Togglable = forwardRef((props, refs) => {
                 updateBlog={props.updateBlog}
                 deleteBlog={props.deleteBlog}
               />
-            ))}
+            ))
+            .sort((a, b) => {
+              if (props.blogs.length > 1) {
+                return b.likes - a.likes;
+              } else {
+                return;
+              }
+            })}
       </div>
       <div className="togglableContent" style={showWhenVisible}>
         {props.children}
