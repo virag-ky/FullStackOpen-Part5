@@ -22,6 +22,22 @@ describe('Blog app', function () {
     cy.contains('bobby logged in');
   });
 
+  it.only('login fails with wrong password', function () {
+    cy.contains('Login').click();
+    cy.get('#username').type('bobby');
+    cy.get('#password').type('123');
+    cy.get('#login').click();
+
+    cy.get('#notification')
+      .should('have.css', 'color', 'rgb(255, 0, 0)')
+      .and('have.css', 'border', '3px solid rgb(255, 0, 0)')
+      .and('contain', 'Wrong username or password');
+
+    cy.get('html').should('not.contain', 'bobby logged in');
+
+    //cy.contains('bobby logged in').should('not.exist')
+  });
+
   describe('when logged in', function () {
     beforeEach(function () {
       cy.contains('Login').click();
