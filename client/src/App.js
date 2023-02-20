@@ -9,7 +9,6 @@ import Togglable from './components/Togglable';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [userBlogs, setUserBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
@@ -19,7 +18,14 @@ const App = () => {
 
   // Load all blogs
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    if (user) {
+      const filteredBlogs = blogs.filter(
+        (blog) => blog.user.username === username
+      );
+      setBlogs(filteredBlogs);
+    } else {
+      blogService.getAll().then((blogs) => setBlogs(blogs));
+    }
   }, []);
 
   // If there's a user logged in and when we refresh the page, we still get the user data
@@ -31,7 +37,7 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
       blogService.setToken(user.token);
-      setUserBlogs(JSON.parse(loggedUserBlogs));
+      setBlogs(JSON.parse(loggedUserBlogs));
     }
   }, []);
 
@@ -52,16 +58,11 @@ const App = () => {
       blogService.setToken(user.token);
       setUser(user);
 
-      // Get only the blogs which belong to the user
-      const filteredBlogs = blogs.filter(
-        (blog) => blog.user.username === username
-      );
-
       // Set the filtered blogs in the local storage
-      window.localStorage.setItem('userBlogs', JSON.stringify(filteredBlogs));
+      window.localStorage.setItem('userBlogs', JSON.stringify(blogs));
 
       // Display the filtered blogs
-      setUserBlogs(filteredBlogs);
+      setBlogs(blogs);
       setUsername('');
       setPassword('');
     } catch (err) {
@@ -77,40 +78,14 @@ const App = () => {
     setUser(null);
   };
 
-  // Helper function: reset local storage
-  const setLocalStorage = () => {
-    const userObj = window.localStorage.getItem('loggedBlogAppUser');
-    const parsedUserObj = JSON.parse(userObj);
-
-    window.localStorage.removeItem('userBlogs');
-    return parsedUserObj;
-  };
-
-  // Helper function: update local storage with a new list of blogs
-  const updateLocalStorage = async (parsedUserObj) => {
-    const res = await blogService.getAll();
-    const filteredBlogs = res.filter(
-      (blog) => blog.user.username === parsedUserObj.username
-    );
-
-    window.localStorage.setItem('userBlogs', JSON.stringify(filteredBlogs));
-    return filteredBlogs;
-  };
-
   // Add a new blog
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
-    const parsedUserObj = setLocalStorage();
 
     try {
       await blogService.create(blogObject);
       const res = await blogService.getAll();
-      if (res.length === 1) {
-        setUserBlogs(res);
-      } else {
-        const filteredBlogs = updateLocalStorage(parsedUserObj);
-        setUserBlogs(filteredBlogs);
-      }
+      setBlogs(res);
     } catch (err) {
       console.log(err);
     }
@@ -118,13 +93,8 @@ const App = () => {
 
   // Add likes
   const addLikes = async (blogObject) => {
-    const parsedUserObj = setLocalStorage();
-
     try {
       await blogService.update(blogObject.id, blogObject);
-      if (user) {
-        updateLocalStorage(parsedUserObj);
-      }
     } catch (err) {
       console.log(err);
     }
@@ -138,10 +108,9 @@ const App = () => {
           `Remove blog "${blogObject.title}" by ${blogObject.author}?`
         )
       ) {
-        const parsedUserObj = setLocalStorage();
         await blogService.deleteBlog(id);
-        const filteredBlogs = updateLocalStorage(parsedUserObj);
-        setUserBlogs(filteredBlogs);
+        const res = await blogService.getAll();
+        setBlogs(res);
       }
     } catch (err) {
       console.log(err);
@@ -179,7 +148,7 @@ const App = () => {
             user={user.username}
             updateBlog={addLikes}
             deleteBlog={deleteBlog}
-            blogs={userBlogs}
+            blogs={blogs}
             buttonLabel="New Blog"
             ref={blogFormRef}
           >

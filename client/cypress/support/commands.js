@@ -29,9 +29,9 @@ Cypress.Commands.add('login', ({ username, password }) => {
     username,
     password,
   }).then(({ body }) => {
-    localStorage.setItem('loggedBlogUser', JSON.stringify(body));
+    localStorage.setItem('loggedBlogAppUser', JSON.stringify(body));
+    cy.visit('');
   });
-  cy.visit('');
 });
 
 Cypress.Commands.add('createBlog', ({ title, author, url }) => {
@@ -41,10 +41,9 @@ Cypress.Commands.add('createBlog', ({ title, author, url }) => {
     body: { title, author, url },
     headers: {
       Authorization: `Bearer ${
-        JSON.parse(localStorage.getItem('loggedBlogUser')).token
+        JSON.parse(localStorage.getItem('loggedBlogAppUser')).token
       }`,
     },
   });
-
   cy.visit('');
 });

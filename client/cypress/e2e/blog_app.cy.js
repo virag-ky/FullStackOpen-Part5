@@ -1,5 +1,6 @@
 describe('Blog app', function () {
   beforeEach(function () {
+    cy.visit('');
     cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`);
     const user = {
       name: 'bobby',
@@ -7,7 +8,6 @@ describe('Blog app', function () {
       password: 'abc',
     };
     cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user);
-    cy.visit('');
   });
 
   it('login form can be opened', function () {
@@ -40,11 +40,7 @@ describe('Blog app', function () {
 
   describe('when logged in', function () {
     beforeEach(function () {
-      cy.contains('Login').click();
-      cy.get('#username').type('bobby');
-      cy.get('#password').type('abc');
-      cy.get('#login').click();
-      //cy.login({ username: 'bobby', password: 'abc' });
+      cy.login({ username: 'bobby', password: 'abc' });
     });
 
     it('a new blog can be created', function () {
@@ -55,14 +51,16 @@ describe('Blog app', function () {
       cy.get('#create').click();
       cy.contains('new blog created with Cypress by Jane Doe');
     });
-  });
 
-  describe('a blog exists', function () {
-    beforeEach(function () {
-      cy.createBlog({
-        title: 'maisy the dog',
-        author: 'virag',
-        url: 'www.example.com',
+    describe('several blogs exist', function () {
+      beforeEach(function () {
+        cy.createBlog({ title: 'mmm', author: 'john', url: 'www' });
+        cy.createBlog({ title: 'aaa', author: 'john', url: 'www' });
+        cy.createBlog({ title: 'eee', author: 'john', url: 'www' });
+      });
+
+      it('can add likes', function () {
+        cy.contains('mmm by john');
       });
     });
   });
