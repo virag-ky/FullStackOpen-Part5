@@ -1,13 +1,13 @@
 describe('Blog app', function () {
   beforeEach(function () {
-    cy.request('POST', 'http://localhost:3003/api/testing/reset');
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`);
     const user = {
       name: 'bobby',
       username: 'bobby',
       password: 'abc',
     };
-    cy.request('POST', 'http://localhost:3003/api/users/', user);
-    cy.visit('http://localhost:3000');
+    cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user);
+    cy.visit('');
   });
 
   it('login form can be opened', function () {
@@ -22,7 +22,7 @@ describe('Blog app', function () {
     cy.contains('bobby logged in');
   });
 
-  it.only('login fails with wrong password', function () {
+  it('login fails with wrong password', function () {
     cy.contains('Login').click();
     cy.get('#username').type('bobby');
     cy.get('#password').type('123');
@@ -44,6 +44,7 @@ describe('Blog app', function () {
       cy.get('#username').type('bobby');
       cy.get('#password').type('abc');
       cy.get('#login').click();
+      //cy.login({ username: 'bobby', password: 'abc' });
     });
 
     it('a new blog can be created', function () {
@@ -53,6 +54,16 @@ describe('Blog app', function () {
       cy.get('#url').type('www.example.com');
       cy.get('#create').click();
       cy.contains('new blog created with Cypress by Jane Doe');
+    });
+  });
+
+  describe('a blog exists', function () {
+    beforeEach(function () {
+      cy.createBlog({
+        title: 'maisy the dog',
+        author: 'virag',
+        url: 'www.example.com',
+      });
     });
   });
 });
