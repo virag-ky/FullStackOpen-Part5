@@ -43,7 +43,7 @@ describe('Blog app', function () {
       cy.login({ username: 'bobby', password: 'abc' });
     });
 
-    it('a new blog can be created', function () {
+    it("a new blog can be created when there's no other blogs yet", function () {
       cy.contains('New Blog').click();
       cy.get('#title').type('new blog created with Cypress');
       cy.get('#author').type('Jane Doe');
@@ -57,6 +57,15 @@ describe('Blog app', function () {
         cy.createBlog({ title: 'mmm', author: 'john', url: 'www' });
         cy.createBlog({ title: 'aaa', author: 'john', url: 'www' });
         cy.createBlog({ title: 'eee', author: 'john', url: 'www' });
+      });
+
+      it('a new blog can be created when there are other blogs as well', function () {
+        cy.contains('New Blog').click();
+        cy.get('#title').type('new blog created with Cypress');
+        cy.get('#author').type('Jane Doe');
+        cy.get('#url').type('www.example.com');
+        cy.get('#create').click();
+        cy.contains('new blog created with Cypress by Jane Doe');
       });
 
       it('can add likes', function () {
