@@ -30,7 +30,9 @@ const Blog = ({ blog, updateBlog, deleteBlog, username }) => {
             <span>URL: {blog.url}</span>
             <div>
               <span>Likes: {userLikes}</span>
-              <button onClick={addLike}>Like</button>
+              <button id={`${blog.title}-like`} onClick={addLike}>
+                Like
+              </button>
             </div>
             <span>{blog.user.username}</span>
             {blog.user.username === username ? (
@@ -41,7 +43,9 @@ const Blog = ({ blog, updateBlog, deleteBlog, username }) => {
           </div>
         )}
       </div>
-      <button onClick={() => setShow(!show)}>{buttonText}</button>
+      <button id={blog.title} onClick={() => setShow(!show)}>
+        {buttonText}
+      </button>
     </div>
   );
 };

@@ -68,8 +68,12 @@ describe('Blog app', function () {
         cy.contains('new blog created with Cypress by Jane Doe');
       });
 
-      it('can add likes', function () {
-        cy.contains('mmm by john');
+      it.only('can add likes', function () {
+        cy.contains('mmm by john').parent().get('#mmm').click();
+
+        cy.contains('mmm by john').parent().get('#mmm-like').click();
+
+        cy.contains('mmm by john').parent().contains('Likes: 1');
       });
     });
   });
