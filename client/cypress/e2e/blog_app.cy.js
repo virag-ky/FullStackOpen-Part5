@@ -8,6 +8,12 @@ describe('Blog app', function () {
       password: 'abc',
     };
     cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user);
+    const user2 = {
+      name: 'maisy',
+      username: 'maisy',
+      password: '123',
+    };
+    cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user2);
   });
 
   it('login form can be opened', function () {
@@ -76,12 +82,27 @@ describe('Blog app', function () {
         cy.contains('mmm by john').parent().contains('Likes: 1');
       });
 
-      it.only('can delete blogs', function () {
+      it('can delete blogs', function () {
         cy.contains('mmm by john').parent().get('#mmm').click();
 
         cy.contains('mmm by john').parent().get('#mmm-delete').click();
 
         cy.contains('mmm by john').should('not.exist');
+      });
+
+      it.only('other users should not see the delete button', function () {
+        cy.visit('');
+        cy.login({ username: 'maisy', password: '123' });
+        cy.createBlog({ title: 'computer', author: 'virag', url: 'www' });
+
+        cy.contains('Logout').click();
+        cy.contains('Login').click();
+        cy.login({ username: 'bobby', password: 'abc' });
+
+        cy.contains('computer by virag').parent().get('#computer').click();
+        cy.contains('computer by virag')
+          .parent()
+          .should('not.contain', 'Remove');
       });
     });
   });
