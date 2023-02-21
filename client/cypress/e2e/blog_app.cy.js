@@ -90,7 +90,7 @@ describe('Blog app', function () {
         cy.contains('mmm by john').should('not.exist');
       });
 
-      it.only('other users should not see the delete button', function () {
+      it('other users should not see the delete button', function () {
         cy.visit('');
         cy.login({ username: 'maisy', password: '123' });
         cy.createBlog({ title: 'computer', author: 'virag', url: 'www' });
@@ -103,6 +103,21 @@ describe('Blog app', function () {
         cy.contains('computer by virag')
           .parent()
           .should('not.contain', 'Remove');
+      });
+
+      it.only('blogs are in descending order by likes', function () {
+        cy.contains('eee by john').parent().get('#eee').click();
+
+        cy.contains('eee by john').parent().get('#eee-like').click();
+
+        cy.contains('eee by john').parent().contains('Likes: 1');
+
+        cy.contains('eee by john').parent().get('#eee-like').click();
+
+        cy.contains('eee by john').parent().contains('Likes: 2');
+        cy.contains('Logout').click();
+
+        cy.get('.blog').eq(0).should('contain', 'eee by john');
       });
     });
   });

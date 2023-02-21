@@ -21,23 +21,15 @@ const Togglable = forwardRef((props, refs) => {
       <div style={hideWhenVisible}>
         <button onClick={toggleVisibility}>{props.buttonLabel}</button>
         {props.blogs &&
-          props.blogs
-            .map((b) => (
-              <Blog
-                key={b.id}
-                blog={b}
-                username={props.user}
-                updateBlog={props.updateBlog}
-                deleteBlog={props.deleteBlog}
-              />
-            ))
-            .sort((a, b) => {
-              if (props.blogs.length > 1) {
-                return b.likes - a.likes;
-              } else {
-                return;
-              }
-            })}
+          props.blogs.map((b) => (
+            <Blog
+              key={b.id}
+              blog={b}
+              username={props.user}
+              updateBlog={props.updateBlog}
+              deleteBlog={props.deleteBlog}
+            />
+          ))}
       </div>
       <div className="togglableContent" style={showWhenVisible}>
         {props.children}

@@ -18,14 +18,7 @@ const App = () => {
 
   // Load all blogs
   useEffect(() => {
-    if (user) {
-      const filteredBlogs = blogs.filter(
-        (blog) => blog.user.username === username
-      );
-      setBlogs(filteredBlogs);
-    } else {
-      blogService.getAll().then((blogs) => setBlogs(blogs));
-    }
+    blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
   // If there's a user logged in and when we refresh the page, we still get the user data
@@ -58,11 +51,16 @@ const App = () => {
       blogService.setToken(user.token);
       setUser(user);
 
+      const blogList = blogs.sort((a, b) => b.likes - a.likes);
+      const filtered = blogList.filter(
+        (blog) => blog.user.username === username
+      );
+
       // Set the filtered blogs in the local storage
-      window.localStorage.setItem('userBlogs', JSON.stringify(blogs));
+      window.localStorage.setItem('userBlogs', JSON.stringify(filtered));
 
       // Display the filtered blogs
-      setBlogs(blogs);
+      setBlogs(filtered);
       setUsername('');
       setPassword('');
     } catch (err) {
@@ -73,9 +71,12 @@ const App = () => {
   };
 
   // Log out
-  const handleLogout = () => {
+  const handleLogout = async () => {
     window.localStorage.clear();
     setUser(null);
+    const res = await blogService.getAll();
+    const blogList = res.sort((a, b) => b.likes - a.likes);
+    setBlogs(blogList);
   };
 
   // Add a new blog
